@@ -1,0 +1,99 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="INFT3050_Assignment1.Site" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head runat="server">
+    <!--Meta details-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%: Page.Title %> - Apollo Watches</title>
+    <!--Stylesheets-->
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="Content/site.css" rel="stylesheet" />
+    <!--JS scripts-->
+    <script type="text/javascript" src="/Scripts/jquery-3.0.0.min.js"></script>
+    <script type="text/javascript" src="/Scripts/umd/popper.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
+    <!--Tab icon-->
+    <link rel="shortcut icon" type="image/x-icon" href="/images/apolloicon.ico" />
+</head>
+
+<body>
+    <!--Full height form container-->
+    <form runat="server" style="height: 100%">
+        <!--Container for bootstrap styles-->
+        <div id="page-container" style="position: relative; min-height: 100%">
+            <!--Navbar-->
+            <nav class="navbar sticky-top navbar-dark navbar-expand-sm bg-dark justify-content-center">
+                <!--Logo/title home link-->
+                <asp:HyperLink runat="server" NavigateUrl="~/UserLayer/Home.aspx" class="navbar-brand" style="padding-top: 10px;">
+                    <img src="/images/logo.png" style="height: 40px;">
+                    Apollo Watches
+                </asp:HyperLink>
+                <!--Line for formatting-->
+                <svg height="50" width="10">
+                    <line x1="0" y1="0" x2="0" y2="50" style="stroke: rgb(128, 128, 128); stroke-width: 2" />
+                </svg>
+                <!--Collapse into a "hamburger" button when the page size is too small-->
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!--Items to collapse-->
+                <div class="navbar-collapse collapse w-100" id="collapsingNavbar3">
+                    <ul class="navbar-nav w-100 justify-content-center">
+                        <li class="nav-item">
+                            <!--Men's watches link-->
+                            <asp:HyperLink runat="server" class="nav-link" NavigateUrl="/UserLayer/MensWatches.aspx">Men's Watches</asp:HyperLink>
+                        </li>
+                        <li class="nav-item">
+                            <!--Women's watches link-->
+                            <asp:HyperLink runat="server" class="nav-link" NavigateUrl="/UserLayer/WomensWatches.aspx">Women's Watches</asp:HyperLink>
+                        </li>
+                        <li class="nav-item">
+                            <!--About link-->
+                            <asp:HyperLink runat="server" class="nav-link" NavigateUrl="/UserLayer/About.aspx">About</asp:HyperLink>
+                        </li>
+                        <li class="nav-item">
+                            <!--Contact link-->
+                            <asp:HyperLink runat="server" class="nav-link" NavigateUrl="/UserLayer/Contact.aspx">Contact Us</asp:HyperLink>
+                        </li>
+                    </ul>
+                    <!--Login link-->
+                    <asp:HyperLink runat="server" ID="loggedout">
+                        <asp:LinkButton runat="server" Text="Login" class="links" Onclick="Login"/> 
+                    </asp:HyperLink>
+                    <!--Invisible unless logged in-->
+                    <asp:HyperLink runat="server" ID="loggedin" Visible="false"> 
+                        <!--Purchase history link-->
+                        <asp:HyperLink runat="server" class="links text-nowrap pr-2" NavigateUrl="~/UserLayer/PurchaseHistory.aspx" title="View Purchase History">Hello, <%: Session["username"].ToString() %></asp:HyperLink>
+                        <svg height="50" width="10">
+                            <line x1="0" y1="0" x2="0" y2="50" style="stroke: rgb(128, 128, 128); stroke-width: 2" />
+                        </svg>
+                        <!--Logout of session-->
+                        <asp:Button runat="server" Text="Logout" class="link-button" OnClick="Logout" CausesValidation="false"/>
+                    </asp:HyperLink>
+                </div>
+            </nav>
+            <!--Body content container-->
+            <div class="container-fluid">
+                <div class="container body-content">
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-copyright text-center py-3 bg-dark text-light" style="position: absolute; bottom: 0; width: 100%">
+                © 2019 Copyright Tobias Colson
+            <a class="text-right" href="AdminLogin.aspx">Site Administration</a>
+            </div>
+            <!-- Copyright -->
+        </div>
+    </form>
+
+</body>
+</html>

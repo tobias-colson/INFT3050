@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "c3184056-Assig2", "INFT3050-Assignment1\c3184056-Assig2.csproj", "{35006726-8451-4B25-B69B-96984703BA0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35006726-8451-4B25-B69B-96984703BA0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35006726-8451-4B25-B69B-96984703BA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35006726-8451-4B25-B69B-96984703BA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35006726-8451-4B25-B69B-96984703BA0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DA8C0388-3A47-49C1-9352-358CB639D1DD}
+	EndGlobalSection
+EndGlobal
