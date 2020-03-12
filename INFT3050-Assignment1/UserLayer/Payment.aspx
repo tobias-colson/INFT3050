@@ -35,7 +35,7 @@
                         <!--Inline postcode control-->
                         <div class="form-group col-md-6">
                             <asp:Label runat="server" AssociatedControlID="expiry">Expiry Date</asp:Label>
-                            <asp:TextBox runat="server" class="form-control" ID="expiry" placeholder="Expiry Date" TextMode="DateTime"/>
+                            <asp:TextBox runat="server" class="form-control" ID="expiry" placeholder="Expiry Date" TextMode="Date"/>
                             <asp:RequiredFieldValidator runat="server" ControlToValidate="expiry"
                                 CssClass="text-danger" ErrorMessage="Missing Expiry Date." />
                         </div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data;
+using MySql.Data.MySqlClient;
 using System.Web.Configuration;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
@@ -15,8 +16,8 @@ namespace INFT3050_Assignment1.DataAcessLayer
     public class DataAccessLogic
     {
         //The db connection and sql command variables to be used throughout
-        static SqlConnection dbConnection = new SqlConnection(WebConfigurationManager.ConnectionStrings["ApolloWatches"].ConnectionString);
-        static SqlCommand command;
+        static MySqlConnection dbConnection = new MySqlConnection(WebConfigurationManager.ConnectionStrings["ApolloWatches"].ConnectionString);
+        static MySqlCommand command;
 
         //Queries the database for a user matching the provided credentials
         //Returns an int 0-2 dependent on result
@@ -28,9 +29,10 @@ namespace INFT3050_Assignment1.DataAcessLayer
             }
             password = GetHashString(password); //MD5 hashes the password
 
+
             string checkUser = " SELECT * FROM UserAccount WHERE userName = @username AND userPassword = @password";  //Query String
 
-            command = new SqlCommand(checkUser, dbConnection); //Initialised command using string
+            command = new MySqlCommand(checkUser, dbConnection); //Initialised command using string
 
             command.Parameters.AddWithValue("@username", username); //Adds parameters, stops injection
             command.Parameters.AddWithValue("@password", password);
@@ -38,7 +40,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
             string id = null; 
             string enabled = "false";
 
-            SqlDataReader results = command.ExecuteReader(); //Runs command
+            MySqlDataReader results = command.ExecuteReader(); //Runs command
             while (results.Read()) //Reads results
             {
                 id = results.GetValue(0).ToString();
@@ -47,11 +49,11 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             dbConnection.Close(); //closes connection
 
-            if (id != null && enabled == "True") //Exists and enabled
+            if (id != null && enabled == "1") //Exists and enabled
             {
                 return 2;
             }
-            else if (id != null && enabled == "False") //Disabled
+            else if (id != null && enabled == "0") //Disabled
             {
                 return 1;
             }
@@ -72,7 +74,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string checkUser = " SELECT * FROM AdminAccount WHERE adminName = @username AND adminPassword = @password";
 
-            command = new SqlCommand(checkUser, dbConnection);
+            command = new MySqlCommand(checkUser, dbConnection);
 
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@password", password);
@@ -80,7 +82,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
             string id = null;
             string enabled = "True";
 
-            SqlDataReader results = command.ExecuteReader();
+            MySqlDataReader results = command.ExecuteReader();
             while (results.Read())
             {
                 id = results.GetValue(0).ToString();
@@ -115,9 +117,9 @@ namespace INFT3050_Assignment1.DataAcessLayer
             {
                 dbConnection.Open();
             }
-            command = new SqlCommand("SELECT * FROM Product", dbConnection);
+            command = new MySqlCommand("SELECT * FROM Product", dbConnection);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
 
             while (reader.Read())
             {
@@ -149,9 +151,9 @@ namespace INFT3050_Assignment1.DataAcessLayer
             {
                 dbConnection.Open();
             }
-            command = new SqlCommand("SELECT * FROM Product", dbConnection);
+            command = new MySqlCommand("SELECT * FROM Product", dbConnection);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
 
             while (reader.Read())
             {
@@ -183,11 +185,11 @@ namespace INFT3050_Assignment1.DataAcessLayer
             }
             string checkUser = " SELECT * FROM Product WHERE productID = @productID";
 
-            command = new SqlCommand(checkUser, dbConnection);
+            command = new MySqlCommand(checkUser, dbConnection);
 
             command.Parameters.AddWithValue("@productID", productID);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 product.productID = Convert.ToInt32(reader.GetValue(0));
@@ -218,7 +220,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string addUser = "INSERT INTO UserAccount (userName, userPassword, accountStatus) VALUES (@username, @password, @status)";
 
-            command = new SqlCommand(addUser, dbConnection);
+            command = new MySqlCommand(addUser, dbConnection);
 
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@password", password);
@@ -230,7 +232,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string createCart = "INSERT INTO ShoppingCart (userID) VALUES (@userID)";
 
-            command = new SqlCommand(createCart, dbConnection);
+            command = new MySqlCommand(createCart, dbConnection);
 
             command.Parameters.AddWithValue("@userID", user.userID);
 
@@ -238,7 +240,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string createHistory = "INSERT INTO PurchaseHistory (userID) VALUES (@userID)";
 
-            command = new SqlCommand(createHistory, dbConnection);
+            command = new MySqlCommand(createHistory, dbConnection);
 
             command.Parameters.AddWithValue("@userID", user.userID);
 
@@ -262,11 +264,11 @@ namespace INFT3050_Assignment1.DataAcessLayer
             
             string checkUser = " SELECT * FROM UserAccount WHERE userName = @username";
 
-            command = new SqlCommand(checkUser, dbConnection);
+            command = new MySqlCommand(checkUser, dbConnection);
 
             command.Parameters.AddWithValue("@username", username);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 user.userID = Convert.ToInt32(reader.GetValue(0));
@@ -292,7 +294,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string addUser = "INSERT INTO AdminAccount (adminName, adminPassword, adminEmail) VALUES (@username, @password, @email)";
 
-            command = new SqlCommand(addUser, dbConnection);
+            command = new MySqlCommand(addUser, dbConnection);
 
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@password", password);
@@ -323,7 +325,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
             if (items.cartItemsID != 0)
             {
                 addItem = "UPDATE CartItems SET quantity = @quantity WHERE cartID = @cartID AND productID = @productID";
-                command = new SqlCommand(addItem, dbConnection);
+                command = new MySqlCommand(addItem, dbConnection);
 
                 int quantity = items.quantity + 1;
                 command.Parameters.AddWithValue("@quantity", quantity);
@@ -335,7 +337,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
             else
             {
                 addItem = "INSERT INTO CartItems (productID, quantity, cartID) VALUES (@productID, 1, @cartID)";
-                command = new SqlCommand(addItem, dbConnection);
+                command = new MySqlCommand(addItem, dbConnection);
 
                 command.Parameters.AddWithValue("@productID", productID);
                 command.Parameters.AddWithValue("@cartID", cart.cartID);
@@ -356,11 +358,11 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string getCart = " SELECT * FROM ShoppingCart WHERE userID = @userid";
 
-            command = new SqlCommand(getCart, dbConnection);
+            command = new MySqlCommand(getCart, dbConnection);
 
             command.Parameters.AddWithValue("@userid", userID);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 cart.cartID = Convert.ToInt32(reader.GetValue(0));
@@ -379,12 +381,12 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string getItems = " SELECT * FROM CartItems WHERE cartID = @cartID AND productID = @productID";
 
-            command = new SqlCommand(getItems, dbConnection);
+            command = new MySqlCommand(getItems, dbConnection);
 
             command.Parameters.AddWithValue("@cartID", cartID);
             command.Parameters.AddWithValue("@productID", productID);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 items.cartItemsID = Convert.ToInt32(reader.GetValue(0));
@@ -473,11 +475,11 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string getItems = " SELECT * FROM CartItems WHERE cartID = @cartID";
 
-            command = new SqlCommand(getItems, dbConnection);
+            command = new MySqlCommand(getItems, dbConnection);
 
             command.Parameters.AddWithValue("@cartID", cartID);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 CartItems item = new CartItems();
@@ -500,11 +502,11 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string getItems = " SELECT * FROM HistoryItems WHERE purchaseHistoryID = @historyID";
 
-            command = new SqlCommand(getItems, dbConnection);
+            command = new MySqlCommand(getItems, dbConnection);
 
             command.Parameters.AddWithValue("@historyID", historyID);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 HistoryItems item = new HistoryItems();
@@ -540,7 +542,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             foreach (CartItems ci in cartItems)
             {
-                command = new SqlCommand(addItem, dbConnection);
+                command = new MySqlCommand(addItem, dbConnection);
 
                 command.Parameters.AddWithValue("@quantity", ci.quantity);
                 command.Parameters.AddWithValue("@productID", ci.productID);
@@ -551,7 +553,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string delete = "DELETE FROM CartItems WHERE cartID = @cartID";
 
-            command = new SqlCommand(delete, dbConnection);
+            command = new MySqlCommand(delete, dbConnection);
 
             command.Parameters.AddWithValue("@cartID", cart.cartID);
             
@@ -569,11 +571,11 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string getHistory = " SELECT * FROM PurchaseHistory WHERE userID = @userid";
 
-            command = new SqlCommand(getHistory, dbConnection);
+            command = new MySqlCommand(getHistory, dbConnection);
 
             command.Parameters.AddWithValue("@userid", userID);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 history.purchaseHistoryID = Convert.ToInt32(reader.GetValue(0));
@@ -594,8 +596,8 @@ namespace INFT3050_Assignment1.DataAcessLayer
             }
 
             UserAccount user = GetUser(username);
-            string status = "UPDATE UserAccount SET accountStatus = 'false' WHERE userID = @userID";
-            command = new SqlCommand(status, dbConnection);
+            string status = "UPDATE UserAccount SET accountStatus = 0 WHERE userID = @userID";
+            command = new MySqlCommand(status, dbConnection);
             
             command.Parameters.AddWithValue("@userID", user.userID);
 
@@ -613,8 +615,8 @@ namespace INFT3050_Assignment1.DataAcessLayer
             }
 
             UserAccount user = GetUser(username);
-            string status = "UPDATE UserAccount SET accountStatus = 'true' WHERE userID = @userID";
-            command = new SqlCommand(status, dbConnection);
+            string status = "UPDATE UserAccount SET accountStatus = 1 WHERE userID = @userID";
+            command = new MySqlCommand(status, dbConnection);
 
             command.Parameters.AddWithValue("@userID", user.userID);
 
@@ -632,7 +634,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
             }
 
             string status = "DELETE FROM Product WHERE productID = @productID";
-            command = new SqlCommand(status, dbConnection);
+            command = new MySqlCommand(status, dbConnection);
 
             command.Parameters.AddWithValue("@productID", productID);
 
@@ -657,7 +659,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
                 "productMaterials, productImage, productCategory) VALUES (@productName, @productManufacturer, @productPrice, " +
                 "@productDescription, @productMaterials, '', @productCategory)";
 
-            command = new SqlCommand(status, dbConnection);
+            command = new MySqlCommand(status, dbConnection);
 
             command.Parameters.AddWithValue("@productName", name);
             command.Parameters.AddWithValue("@productManufacturer", manufacturer);
@@ -670,9 +672,9 @@ namespace INFT3050_Assignment1.DataAcessLayer
 
             string newItem = " SELECT MAX(productID) FROM Product";
 
-            command = new SqlCommand(newItem, dbConnection);
+            command = new MySqlCommand(newItem, dbConnection);
 
-            SqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 product.productID = Convert.ToInt32(reader.GetValue(0));
@@ -701,7 +703,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
                 "productPrice = @productPrice, productDescription = @productDescription," +
                 "productMaterials = @productMaterials, productImage = '', productCategory = @productCategory WHERE productID = @productID";
 
-            command = new SqlCommand(status, dbConnection);
+            command = new MySqlCommand(status, dbConnection);
 
             command.Parameters.AddWithValue("@productName", name);
             command.Parameters.AddWithValue("@productManufacturer", manufacturer);
@@ -730,7 +732,7 @@ namespace INFT3050_Assignment1.DataAcessLayer
             }
 
             string status = "UPDATE Product SET productImage = @imagePath WHERE productID = @productID";
-            command = new SqlCommand(status, dbConnection);
+            command = new MySqlCommand(status, dbConnection);
 
             command.Parameters.AddWithValue("@productID", productID);
             command.Parameters.AddWithValue("@imagePath", imagePath);
